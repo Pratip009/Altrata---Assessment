@@ -1,47 +1,46 @@
 import React from "react";
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Calendar = ({ date }) => {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const selectedDay = date.getDate();
+  const currentYear = date.getFullYear();
+  const currentMonth = date.getMonth();
+  const highlightedDate = date.getDate();
 
-  const firstDayOfMonth = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  
-  const calendarCells = [];
-  for (let i = 0; i < firstDayOfMonth; i++) calendarCells.push(null);
-  for (let day = 1; day <= daysInMonth; day++) calendarCells.push(day);
+  const startDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+  const totalDaysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   
-  const weeks = [];
-  for (let i = 0; i < calendarCells.length; i += 7) {
-    weeks.push(calendarCells.slice(i, i + 7));
+  const daysArray = [];
+  for (let i = 0; i < startDayIndex; i++) daysArray.push(null);
+  for (let day = 1; day <= totalDaysInMonth; day++) daysArray.push(day);
+
+ 
+  const weekRows = [];
+  for (let i = 0; i < daysArray.length; i += 7) {
+    weekRows.push(daysArray.slice(i, i + 7));
   }
 
   return (
     <div className="max-w-sm mx-auto mt-10 p-4 border rounded-lg shadow-sm bg-white">
-    
+
       <div className="text-center text-lg font-semibold mb-2">
-        {date.toLocaleString("default", { month: "long" })} {year}
+        {date.toLocaleString("default", { month: "long" })} {currentYear}
       </div>
 
       <div className="grid grid-cols-7 text-center text-sm font-medium text-gray-600 border-b pb-1 mb-2">
-        {DAYS.map((d) => (
-          <div key={d}>{d}</div>
+        {WEEK_DAYS.map((day) => (
+          <div key={day}>{day}</div>
         ))}
       </div>
 
-   
       <div className="grid grid-cols-7 text-center gap-y-1">
-        {weeks.map((week, i) =>
-          week.map((day, j) => (
+        {weekRows.map((week, weekIndex) =>
+          week.map((day, dayIndex) => (
             <div
-              key={`${i}-${j}`}
+              key={`${weekIndex}-${dayIndex}`}
               className={`py-2 rounded ${
-                day === selectedDay
+                day === highlightedDate
                   ? "bg-blue-500 text-white font-semibold"
                   : "text-gray-800"
               }`}
